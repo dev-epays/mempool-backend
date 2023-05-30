@@ -13,6 +13,7 @@ export interface AbstractBitcoinApi {
   $getRawBlock(hash: string): Promise<Buffer>;
   $getAddress(address: string): Promise<IEsploraApi.Address>;
   $getAddressTransactions(address: string, lastSeenTxId: string): Promise<IEsploraApi.Transaction[]>;
+  $getAddressUTXO(address: string): Promise<IEsploraApi.Transaction[]>;
   $getAddressPrefix(prefix: string): string[];
   $sendRawTransaction(rawTransaction: string): Promise<string>;
   $getOutspend(txId: string, vout: number): Promise<IEsploraApi.Outspend>;

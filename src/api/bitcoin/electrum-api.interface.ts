@@ -9,4 +9,12 @@ export namespace IElectrumApi {
     tx_hash: string;
     fee?: number;
   }
+
+  export interface ScriptHashUTXO {
+    height: number;
+    tx_hash: string;
+    tx_pos: number;
+    value: number;
+  }
+
 }

@@ -113,6 +113,10 @@ class BitcoinApi implements AbstractBitcoinApi {
     throw new Error('Method getAddressTransactions not supported by the Bitcoin RPC API.');
   }
 
+  $getAddressUTXO(address: string): Promise<IEsploraApi.Transaction[]> {
+    throw new Error('Method getAddressUTXO not supported by the Bitcoin RPC API.');
+  }
+
   $getRawMempool(): Promise<IEsploraApi.Transaction['txid'][]> {
     return this.bitcoindClient.getRawMemPool();
   }

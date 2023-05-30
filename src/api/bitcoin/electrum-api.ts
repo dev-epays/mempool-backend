@@ -126,8 +126,40 @@ class BitcoindElectrsApi extends BitcoinApi implements AbstractBitcoinApi {
     }
   }
 
+  async $getAddressUTXO(address: string): Promise<IEsploraApi.Transaction[]> {
+    const addressInfo = await this.bitcoindClient.validateAddress(address);
+    if (!addressInfo || !addressInfo.isvalid) {
+      return [];
+    }
+
+    try {
+      const transactions: IEsploraApi.Transaction[] = [];
+      const utxos = await this.$getScriptHashUTXO(addressInfo.scriptPubKey);
+
+      for (let utxo of utxos) {
+        const tx = await this.$getRawTransaction(utxo.tx_hash, false, true);
+        transactions.push(tx);
+      }
+      return transactions;
+    } catch (e: any) {
+      throw new Error(typeof e === 'string' ? e : e && e.message || e);
+    }
+  }
+
   private $getScriptHashBalance(scriptHash: string): Promise<IElectrumApi.ScriptHashBalance> {
     return this.electrumClient.blockchainScripthash_getBalance(this.encodeScriptHash(scriptHash));
+  }
+
+  private $getScriptHashUTXO(scriptHash: string): Promise<IElectrumApi.ScriptHashUTXO[]> {
+    const fromCache = memoryCache.get<IElectrumApi.ScriptHashUTXO[]>('Scripthash_listunspent', scriptHash);
+    if (fromCache) {
+      return Promise.resolve(fromCache);
+    }
+    return this.electrumClient.blockchainScripthash_listunspent(this.encodeScriptHash(scriptHash))
+      .then((utxos) => {
+        memoryCache.set('Scripthash_listunspent', scriptHash, utxos, 2);
+        return utxos;
+      });
   }
 
   private $getScriptHashHistory(scriptHash: string): Promise<IElectrumApi.ScriptHashHistory[]> {
