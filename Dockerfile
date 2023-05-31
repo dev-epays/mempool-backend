@@ -15,10 +15,9 @@ RUN npm install
 # RUN npm ci --omit=dev
 
 # Bundle app source
+USER mempool
 COPY . .
 
 RUN npm run build
-
-USER mempool
 EXPOSE 8999
 CMD [ "sh", "start.sh" ]
