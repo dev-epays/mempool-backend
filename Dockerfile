@@ -1,4 +1,4 @@
-FROM node:16
+FROM node:16.16.0-buster-slim
 
 # Create app directory
 WORKDIR /usr/src/app
@@ -16,5 +16,7 @@ RUN npm install
 COPY . .
 
 RUN npm run build
+
+USER 1000
 EXPOSE 8999
 CMD [ "sh", "start.sh" ]

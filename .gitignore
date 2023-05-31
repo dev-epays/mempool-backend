@@ -4,6 +4,7 @@
 !mempool-config.template.json
 !mempool-config.sample.json
 mempool-config.json
+docker-compose.yml
 pools.json
 icons.json
 

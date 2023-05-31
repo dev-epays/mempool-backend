@@ -1,0 +1,41 @@
+version: "3.7"
+
+services:
+  core:
+    build: https://github.com/dev-epays/dogecoin-core-docker.git
+    environment:
+      RPC_USER: "dogecoin"
+      RPC_PASSWORD: "dogecoin"
+    volumes:
+      - ./path_to_data:/home/dogecoin/.dogecoin
+  electrum:
+    build: https://github.com/dev-epays/electrumx-docker
+    environment:
+      COIN: "Dogecoin"
+      DB_DIRECTORY: "/home/electrumx/"
+      DAEMON_URL: "http://dogecoin:dogecoin@core:22555/"
+      SERVICES: "tcp://0.0.0.0:50002"
+    volumes:
+      - ./path_to_data:/home/electrumx/
+    depends_on:
+      - core
+  api:
+    build: ./
+    environment:
+      MEMPOOL_BACKEND: "electrum"
+      CORE_RPC_HOST: "core"
+      CORE_RPC_PORT: "25555"
+      CORE_RPC_USERNAME: "dogecoin"
+      CORE_RPC_PASSWORD: "dogecoin"
+
+      DATABASE_ENABLED: "false"
+      STATISTICS_ENABLED: "true"
+    user: "1000:1000"
+    restart: on-failure
+    depends_on:
+      - electrum
+      - core
+    stop_grace_period: 1m
+    volumes:
+      - ./data:/usr/src/app/cache
+ 
