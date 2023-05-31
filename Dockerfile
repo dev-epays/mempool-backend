@@ -1,7 +1,9 @@
 FROM node:16.16.0-buster-slim
 
+RUN useradd -m mempool && mkdir /home/mempool/app
+
 # Create app directory
-WORKDIR /usr/src/app
+WORKDIR /home/mempool/app
 
 # Install app dependencies
 # A wildcard is used to ensure both package.json AND package-lock.json are copied
@@ -17,6 +19,6 @@ COPY . .
 
 RUN npm run build
 
-USER 1000
+USER mempool
 EXPOSE 8999
 CMD [ "sh", "start.sh" ]
