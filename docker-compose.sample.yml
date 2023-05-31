@@ -12,11 +12,11 @@ services:
     build: git@github.com:dev-epays/electrumx-docker.git#main
     environment:
       COIN: "Dogecoin"
-      DB_DIRECTORY: "/home/electrumx/"
+      DB_DIRECTORY: "/home/electrumx/db/"
       DAEMON_URL: "http://dogecoin:dogecoin@core:22555/"
       SERVICES: "tcp://0.0.0.0:50002"
     volumes:
-      - /home/blockchain/blockchains/dogecoin/db:/home/electrumx/
+      - /home/blockchain/blockchains/dogecoin/db:/home/electrumx/db
     depends_on:
       - core
   api:
@@ -24,9 +24,13 @@ services:
     environment:
       MEMPOOL_BACKEND: "electrum"
       CORE_RPC_HOST: "core"
-      CORE_RPC_PORT: "25555"
+      CORE_RPC_PORT: "22555"
       CORE_RPC_USERNAME: "dogecoin"
       CORE_RPC_PASSWORD: "dogecoin"
+
+      ELECTRUM_HOST: "electrum"
+      ELECTRUM_PORT: "50002"
+      ELECTRUM_TLS_ENABLED: "false"
 
       DATABASE_ENABLED: "false"
       STATISTICS_ENABLED: "true"
@@ -37,4 +41,5 @@ services:
     stop_grace_period: 1m
     volumes:
       - ./data:/usr/src/app/cache
- 
+    ports:
+      - "8999:8999"
