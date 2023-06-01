@@ -126,19 +126,25 @@ class BitcoindElectrsApi extends BitcoinApi implements AbstractBitcoinApi {
     }
   }
 
-  async $getAddressUTXO(address: string): Promise<IEsploraApi.Transaction[]> {
+  async $getAddressUTXO(address: string): Promise<IEsploraApi.UTXO[]> {
     const addressInfo = await this.bitcoindClient.validateAddress(address);
     if (!addressInfo || !addressInfo.isvalid) {
       return [];
     }
 
     try {
-      const transactions: IEsploraApi.Transaction[] = [];
+      const transactions: IEsploraApi.UTXO[] = [];
       const utxos = await this.$getScriptHashUTXO(addressInfo.scriptPubKey);
 
       for (let utxo of utxos) {
         const tx = await this.$getRawTransaction(utxo.tx_hash, false, true);
-        transactions.push(tx);
+        const UTXOConverted: IEsploraApi.UTXO = {
+          txid: utxo.tx_hash,
+          vout: utxo.tx_pos,
+          status: tx.status,
+          value: utxo.value
+        };
+        transactions.push(UTXOConverted);
       }
       return transactions;
     } catch (e: any) {

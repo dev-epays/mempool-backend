@@ -110,7 +110,7 @@ class ElectrsApi implements AbstractBitcoinApi {
     throw new Error('Method getAddressTransactions not implemented.');
   }
 
-  $getAddressUTXO(address: string): Promise<IEsploraApi.Transaction[]> {
+  $getAddressUTXO(address: string): Promise<IEsploraApi.UTXO[]> {
     throw new Error('Method getAddressUTXO not implemented.');
   }
 
