@@ -20,7 +20,7 @@ services:
     depends_on:
       - core
   api:
-    build: ./
+    build: git@github.com:dev-epays/mempool-backend.git#main
     environment:
       MEMPOOL_BACKEND: "electrum"
       CORE_RPC_HOST: "core"
